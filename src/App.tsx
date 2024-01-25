@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import './App.css';
 import { ITask } from './Interfaces';
 import TodoTask from './components/TodoTask';
@@ -17,45 +17,49 @@ function App() {
   };
 
   const addTask = (): void => {
-    const newTask: ITask = { taskName: task, deadline: deadline };
+    if (task.trim() === '' || deadline < 0) {
+      // Input validation failed, handle accordingly
+      return;
+    }
+
+    const newTask: ITask = { id: Date.now(), taskName: task, deadline: deadline };
     setTodo([...todo, newTask]);
     setTask('');
     setDeadline(0);
   };
 
   return (
-    <>
-      <div className='App'>
-        <div className='header'>
-          <div className='inputcontainer'>
-            <input
-              type='text'
-              placeholder='Task...'
-              name='task'
-              value={task}
-              onChange={handleChange}
-            />
+    <main className='App'>
+      <div className='header'>
+        <div className='inputcontainer'>
+          <input
+            type='text'
+            placeholder='Task...'
+            name='task'
+            value={task}
+            onChange={handleChange}
+          />
 
-            <input
-              type='number'
-              placeholder='Deadline (in Days)'
-              name='deadline'
-              value={deadline}
-              onChange={handleChange}
-              min="0"
-            />
-          </div>
-          <button onClick={addTask}>Add Task</button>
+          <input
+            type='number'
+            placeholder='Deadline (in Days)'
+            name='deadline'
+            value={deadline}
+            onChange={handleChange}
+            min="0"
+          />
         </div>
-        <div className='todoList'>
-          {todo.map((task: ITask) => {
-            return <TodoTask key={task.id} task={task} />;
-          })}
-        </div>
+        <button onClick={addTask}>Add Task</button>
       </div>
-    </>
+      <div className='todoList'>
+        {todo.map((task: ITask) => (
+          <TodoTask key={task.id} task={task} />
+        ))}
+      </div>
+    </main>
   );
 }
 
 export default App;
+
 
