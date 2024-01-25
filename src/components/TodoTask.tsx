@@ -1,18 +1,28 @@
-import React from 'react'
-import { ITask } from '../Interfaces'
+import React from "react";
+import { ITask } from "../Interfaces";
+import './TodoTask.css'
+
 interface Props {
-    task:ITask;
-}
-const TodoTask = ({task}: Props) => {
-  return (
-    <div className='task'>
-        <div className='content'>
-            <span>{task.taskNAme}</span>
-            <span>{task.deadline}</span>
-        </div>
-        <button>X</button>
-    </div>
-  )
+  task: ITask;
+  completeTask(taskNameToDelete: string): void;
 }
 
-export default TodoTask
+const TodoTask = ({ task, completeTask }: Props) => {
+  return (
+    <div className="task">
+      <div className="content">
+        <span>{task.taskName}</span>
+        <span>{task.deadline}</span>
+      </div>
+      <button
+        onClick={() => {
+          completeTask(task.taskName);
+        }}
+      >
+        X
+      </button>
+    </div>
+  );
+};
+
+export default TodoTask;

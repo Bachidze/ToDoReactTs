@@ -1,65 +1,69 @@
-import React, { useState, ChangeEvent } from 'react';
-import './App.css';
-import { ITask } from './Interfaces';
-import TodoTask from './components/TodoTask';
+import React, { FC, ChangeEvent, useState } from "react";
+import "./App.css";
+import TodoTask from "./Components/TodoTask";
+import { ITask } from "./Interfaces";
 
-function App() {
-  const [task, setTask] = useState<string>('');
-  const [deadline, setDeadline] = useState<number>(0);
-  const [todo, setTodo] = useState<ITask[]>([]);
+const App: FC = () => {
+  const [task, setTask] = useState<string>("");
+  const [deadline, setDealine] = useState<number>(0);
+  const [todoList, setTodoList] = useState<ITask[]>([]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.name === 'task') {
-      setTask(e.target.value);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    if (event.target.name === "task") {
+      setTask(event.target.value);
     } else {
-      setDeadline(Number(e.target.value));
+      setDealine(Number(event.target.value));
     }
   };
 
   const addTask = (): void => {
-    if (task.trim() === '' || deadline < 0) {
-      // Input validation failed, handle accordingly
-      return;
-    }
+    const newTask = { taskName: task, deadline: deadline };
+    setTodoList([...todoList, newTask]);
+    setTask("");
+    setDealine(0);
+  };
 
-    const newTask: ITask = { id: Date.now(), taskName: task, deadline: deadline };
-    setTodo([...todo, newTask]);
-    setTask('');
-    setDeadline(0);
+  const completeTask = (taskNameToDelete: string): void => {
+    setTodoList(
+      todoList.filter((task) => {
+        return task.taskName != taskNameToDelete;
+      })
+    );
   };
 
   return (
-    <main className='App'>
-      <div className='header'>
-        <div className='inputcontainer'>
+    <div className="App">
+      <div className="header">
+        <div className="inputContainer">
           <input
-            type='text'
-            placeholder='Task...'
-            name='task'
+            type="text"
+            placeholder="Task..."
+            name="task"
             value={task}
             onChange={handleChange}
           />
-
           <input
-            type='number'
-            placeholder='Deadline (in Days)'
-            name='deadline'
+            type="number"
+            placeholder="Deadline (in Days)..."
+            name="deadline"
             value={deadline}
             onChange={handleChange}
-            min="0"
           />
         </div>
-        <button onClick={addTask}>Add Task</button>
+        <div className="btn">
+        <button onClick={addTask}>+</button>
+        </div>
       </div>
-      <div className='todoList'>
-        {todo.map((task: ITask) => (
-          <TodoTask key={task.id} task={task} />
-        ))}
+      <div className="todoList">
+        {todoList.map((task: ITask, key: number) => {
+          return <TodoTask key={key} task={task} completeTask={completeTask} />;
+        })}
       </div>
-    </main>
+    </div>
   );
-}
+};
 
 export default App;
+
 
 
